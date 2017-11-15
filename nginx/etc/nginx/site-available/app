@@ -1,0 +1,30 @@
+
+location /assets/ {
+  expires 1y;
+  add_header Cache-Control public;
+  add_header ETag "";
+}
+
+#gzip
+gzip_vary on;
+gzip_static on;
+
+#err
+error_page 404 /404.html;
+error_page 500 502 503 504 /500.html;
+
+#log
+access_log /var/log/nginx/app_access.log;
+error_log /var/log/nginx/app_error.log;
+
+#response
+add_header X-Frame-Options DENY;
+add_header X-Content-Type-Options nosniff;
+add_header X-XSS-Protection "1; mode-block";
+
+#size
+client_max_body_size 1g;
+
+#Basic
+auth_basic "Welcome to app";
+auth_basic_user_file /home/app/.htpasswd;

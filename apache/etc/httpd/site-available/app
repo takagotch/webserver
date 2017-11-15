@@ -1,0 +1,54 @@
+
+<Directory "/home/app/rails_root/public/assets/">
+  ExpiresActive On
+  ExpiresDefault "access plus 1 year"
+  Header set Cache-Control "public"
+  Header unset ETag
+  FileETag None
+</Directory>
+
+#gzip
+AddEncoding x-gzip .gz
+Header set Vary Accept-Encoding
+
+RewirteEngine on
+RewirteCond %{HTTP: Accept-Encoding} \b(x-)7gzip\b
+RewirteCond %{REQUEST_FILENAME}.gz -r
+RewirteRule ^(.*)$ $1.gz [L]
+
+<FilesMatch \.css\.gz$>
+  ForceType text/css
+</FilesMatch>
+
+<FilesMatch \.js\.gz$>
+  ForceType text/javascript
+</FilesMatch>
+
+#err
+ErrorDocument 404 /404.html
+ErrorDocument 500 /500.html
+ErrorDocument 502 /502.html
+ErrorDocument 503 /503.html
+ErrorDocument 504 /504.html
+
+#log
+CustomLog /var/log/httpd/app.log common
+ErrorLog /var/log/httpd/app_error.log
+
+#response
+Header set X-Frame-Options SaMEORIGIN
+Header set X-Content-Type-Options nosniff
+Header set X-XSS-Protection "1: mode-block"
+
+#size
+LimitRequestBody 1073741824
+
+#Basic
+<Directory /home/app/rails_root/public/public>
+  AllowOverride all
+  Options -MultiViews
+  AuthType Basic
+  AuthName "Welcome to app"
+  AuthUserFile /home/app/.htpasswd
+  Request valid-user
+</Directory>
