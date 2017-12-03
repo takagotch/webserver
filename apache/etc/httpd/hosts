@@ -1,0 +1,10 @@
+#
+#
+<LocationMatch "^/assets/.*$">
+  Header unset Last-Modified
+  Header unset ETag
+  FileETag None
+  ExpiresActive On
+  ExpiresDefault "access plus 1 year"
+</LocationMatch>
+
